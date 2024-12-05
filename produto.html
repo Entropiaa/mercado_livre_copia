@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes do Produto</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+  body {
+    margin: 0;
+    background-color: white;
+    color: white;
+    font-family: jetBrains mono;
+  }
+
+  .product-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 40px;
+  }
+
+  .product-image {
+    width: 45%;
+    background-color: #5a5a5a;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .product-details {
+    font-size: 30px;
+    background-color: #afe0fd;
+    color: rgb(0, 0, 0);
+    width: 45%;
+    padding: 20px;
+    border: 2px solid #000000;
+    border-radius: 8px;
+  }
+
+  .btn-add-cart {
+    display: flex;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #barra-navegacao {
+    display: flex;
+    align-items: center;
+    background-color: #0011ff;
+    padding: 15px 25px;
+    border-bottom: 1px solid white;
+  }
+</style>
+
+<body>
+  <nav class="navbar navbar-expand-lg" id="barra-navegacao">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="index.html">
+            <img src="img/WhatsApp_Image_2024-12-04_at_21.31.59-removebg-preview (1).png" alt="Logo" width="45" height="45" class="d-inline-block align-text">
+            Tudo Aqui</a>
+        <input type="text" id="campo-busca" class="form-control w-50" placeholder="Buscar produto">
+        <a class="btn btn-success" href="carrinho.html">Ver Carrinho</a>
+    </div>
+</nav>
+  <div class="container">
+    <div class="product-container">
+      <div class="product-image">
+        <img id="product-image" src="" alt="Imagem do Produto">
+      </div>
+
+      <div class="product-details">
+        <h2 id="product-title">Nome do Produto</h2>
+        <p id="product-price">Preço do produto</p>
+        <p id="product-description">Descrição do produto</p>
+        <button id="btn-add-cart" class="btn btn-add-cart">Adicionar ao Carrinho</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      // Recuperar ID do produto da URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+
+      // Função para buscar detalhes do produto
+      function fetchProductDetails(id) {
+        $.get(`https://fakestoreapi.com/products/${id}`, function (product) {
+          // Exibir os detalhes do produto na página
+          $('#product-image').attr('src', product.image);
+          $('#product-title').text(product.title);
+          $('#product-price').text(`$${product.price}`);
+          $('#product-description').text(product.description);
+
+          // Função para adicionar ao carrinho
+          $('#btn-add-cart').click(function () {
+            addToCart(product);
+          });
+        }).fail(function (error) {
+          console.log('Erro ao buscar produto:', error);
+        });
+      }
+
+      // Função para adicionar ao carrinho
+      function addToCart(product) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.push(product);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`${product.title} foi adicionado ao carrinho!`);
+      }
+
+      // Carregar os detalhes do produto ao carregar a página
+      if (productId) {
+        fetchProductDetails(productId);
+      }
+    });
+  </script>
+</body>
+
+</html>
