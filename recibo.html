@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Recibo de Compra</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .receipt {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-print {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="receipt">
+            <h1>Recibo da Compra</h1>
+            <p><strong>Data:</strong> <span id="data-compra"></span></p>
+            <h3>Itens Comprados</h3>
+            <ul id="lista-itens"></ul>
+            <h3>Total: <span id="total-compra">R$ 0.00</span></h3>
+            <button id="btn-imprimir" class="btn btn-primary btn-print" onclick="imprimirRecibo()">Imprimir</button>
+        </div>
+    </div>
+
+    <script>
+        const carrinho = JSON.parse(localStorage.getItem('checkout')) || [];
+        const total = carrinho.reduce((acc, produto) => acc + produto.price, 0);
+
+        document.getElementById('data-compra').innerText = new Date().toLocaleDateString();
+
+        const listaItensHTML = document.getElementById('lista-itens');
+        carrinho.forEach(produto => {
+            const itemHTML = `<li><strong>${produto.title}</strong>: R$ ${produto.price.toFixed(2)}</li>`;
+            listaItensHTML.innerHTML += itemHTML;
+        });
+        document.getElementById('total-compra').innerText = `R$ ${total.toFixed(2)}`;
+        function imprimirRecibo() {
+            document.getElementById('btn-imprimir').style.display = 'none';
+            window.print();
+        }
+    </script>
+
+</body>
+
+</html>

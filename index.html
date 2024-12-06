@@ -32,7 +32,7 @@
 
     #carrossel-produtos {
         position: relative;
-        margin-top: -50px; 
+        margin-top: -50px;
         z-index: 10;
     }
 
@@ -85,7 +85,8 @@
         font-weight: bold;
         margin-bottom: 15px;
     }
-    #contact{
+
+    #contact {
         background-color: #0011ff;
     }
 </style>
@@ -94,7 +95,8 @@
     <nav class="navbar navbar-expand-lg" id="barra-navegacao">
         <div class="container-fluid">
             <a class="navbar-brand text-white">
-                <img src="img/WhatsApp_Image_2024-12-04_at_21.31.59-removebg-preview (1).png" alt="Logo" width="45" height="45" class="d-inline-block align-text">
+                <img src="img/WhatsApp_Image_2024-12-04_at_21.31.59-removebg-preview (1).png" alt="Logo" width="45"
+                    height="45" class="d-inline-block align-text">
                 Tudo Aqui</a>
             <input type="text" id="campo-busca" class="form-control w-50" placeholder="Buscar produto">
             <a class="btn btn-success" href="carrinho.html">Ver Carrinho</a>
@@ -104,7 +106,8 @@
     <div id="carrossel-principal" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="img/preA-promoção-de-vendas-definição-e-exemplos.jpg" class="d-block w-100" alt="Imagem 1">
+                <img src="img/preA-promoção-de-vendas-definição-e-exemplos.jpg" class="d-block w-100"
+                    alt="Imagem 1">
             </div>
             <div class="carousel-item">
                 <img src="img/streaming-de-vendas.png" class="d-block w-100" alt="Imagem 2">
@@ -143,14 +146,14 @@
 
     <footer class="footer" id="contact">
         <div class="container">
-          <div class="row">
-            <div class="col-xl-12 d-flex pb-2">
-              <span class=" mx-auto">Instituto Federal Farroupilha | &copy; copyryght 2024</span>
-          
+            <div class="row">
+                <div class="col-xl-12 d-flex pb-2">
+                    <span class=" mx-auto">Instituto Federal Farroupilha | &copy; copyryght 2024</span>
+
+                </div>
             </div>
-        </div>
-      </footer>
-    
+    </footer>
+
 
 
 
@@ -158,14 +161,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-           let produtos = [];
+        let produtos = [];
 
         function buscarProdutos() {
-            $.get('https://fakestoreapi.com/products', function(dados) {
+            $.get('https://fakestoreapi.com/products', function (dados) {
                 produtos = dados;
                 preencherCarrosselProdutos(dados);
                 exibirProdutos(dados);
-            }).fail(function(erro) {
+            }).fail(function (erro) {
                 console.log('Erro ao buscar produtos:', erro);
             });
         }
@@ -173,24 +176,36 @@
         function preencherCarrosselProdutos(produtos) {
             $('#itens-carrossel-produtos').empty();
             const itensPorSlide = 4;
+
             for (let i = 0; i < produtos.length; i += itensPorSlide) {
                 const fatiaProdutos = produtos.slice(i, i + itensPorSlide);
                 const ativo = i === 0 ? 'active' : '';
+
                 const itemCarrossel = `
-                    <div class="carousel-item ${ativo}">
-                        <div class="row justify-content-center">
-                            ${fatiaProdutos.map(produto => `
-                                <div class="col-2">
-                                    <div class="card">
-                                        <img src="${produto.image}" class="card-img-top" alt="${produto.title}">
-                                        <p>${produto.title}</p>
-                                        <p class="preco">R$ ${produto.price}</p>
+            <div class="carousel-item ${ativo}">
+                <div class="row justify-content-center">
+                    ${fatiaProdutos.map(produto => {
+                    const avaliacao = produto.rating?.rate || gerarAvaliacaoAleatoria();
+                    const desconto = gerarDescontoAleatorio();
+                    const precoComDesconto = (produto.price * (1 - desconto / 100)).toFixed(2);
+
+                    return `
+                            <div class="col-2">
+                                <div class="card text-center">
+                                    <img src="${produto.image}" class="card-img-top" alt="${produto.title}">
+                                    <div class="card-body">
+                                        <p class="card-title">${produto.title}</p>
+                                        <p class="text-muted">Avaliações: ${avaliacao} estrelas</p>
+                                        <p class="text-danger">Desconto: ${desconto}% OFF</p>
+                                        <p class="preco text-primary fw-bold">R$ ${precoComDesconto}</p>
                                     </div>
                                 </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
+                            </div>
+                        `;
+                }).join('')}
+                </div>
+            </div>
+        `;
                 $('#itens-carrossel-produtos').append(itemCarrossel);
             }
 
@@ -201,7 +216,6 @@
             }, 3000);
         }
 
-        // Função para exibir produtos na seção
         function exibirProdutos(produtos) {
             $('#produtos').empty();
             produtos.forEach(produto => {
@@ -224,20 +238,59 @@
         }
 
         function adicionarAoCarrinho(idProduto) {
-        const produto = produtos.find(p => p.id === idProduto);
-        if (produto) {
-            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-            
-            carrinho.push(produto);
+            const produto = produtos.find(p => p.id === idProduto);
+            if (produto) {
+                let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 
-            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+                carrinho.push(produto);
 
-            Swal.fire("Produto Adicionado no Carrinho!");
-        } else {
-            alert('Erro ao adicionar produto ao carrinho.');
+                localStorage.setItem('carrinho', JSON.stringify(carrinho));
+
+                Swal.fire("Produto Adicionado no Carrinho!");
+            } else {
+                alert('Erro ao adicionar produto ao carrinho.');
+            }
         }
-    }
-        buscarProdutos();
+        function gerarAvaliacaoAleatoria() {
+            const maxEstrelas = 5;
+            const avaliacao = Math.random() * maxEstrelas;
+            return avaliacao.toFixed(1);
+        }
+
+        function gerarDescontoAleatorio() {
+            const desconto = Math.floor(Math.random() * 51); 
+            return desconto;
+        }
+
+        function exibirProdutos(produtos) {
+            $('#produtos').empty();
+
+            produtos.forEach(produto => {
+                const avaliacao = produto.rating?.rate || gerarAvaliacaoAleatoria(); 
+                const desconto = gerarDescontoAleatorio();
+
+                $('#produtos').append(`
+                <div class="col">
+                    <div class="card cartao-produto">
+                        <img src="${produto.image}" class="card-img-top" alt="${produto.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${produto.title}</h5>
+                            <p class="text-muted">Avaliações: ${avaliacao} estrelas</p>
+                            <p class="text-danger">Desconto: ${desconto}% OFF</p>
+                            <p class="text-primary fw-bold">R$ ${(produto.price * (1 - desconto / 100)).toFixed(2)}</p>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-success btn-sm" onclick="adicionarAoCarrinho(${produto.id})">Adicionar ao Carrinho</button>
+                                <a href="produto.html?id=${produto.id}" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+            });
+        }
+
+        buscarProdutos(); 
     </script>
 </body>
+
 </html>

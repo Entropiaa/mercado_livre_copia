@@ -8,13 +8,111 @@
     <title>Carrinho</title>
     <style>
         body {
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
         }
 
         .header {
-            background-color: #FFF;
+            background-color: #0011ff;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header .btn {
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+
+        .header .btn:hover {
+            background-color: #218838;
+        }
+
+        .product-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border-bottom: 1px solid #ddd;
-            padding: 10px 0;
+            padding: 15px 0;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-details {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        .product-details h5 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .product-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .product-details .price {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .remove-button,
+        .checkout-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .remove-button {
+            background-color: #dc3545;
+        }
+
+        .remove-button:hover {
+            background-color: #c82333;
+        }
+
+        .checkout-button {
+            background-color: #007bff;
+        }
+
+        .checkout-button:hover {
+            background-color: #0056b3;
+        }
+
+        .total-section {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: right;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
         }
     </style>
 </head>
@@ -22,23 +120,22 @@
 <body>
 
     <header class="header">
-        <div class="container">
-            <h1 class="logo">Carrinho</h1>
-            <a class="btn btn-secondary" href="index.html">Voltar</a>
-        </div>
+        <h1>Carrinho de Compras</h1>
+        <a class="btn" href="index.html">Voltar</a>
     </header>
 
     <main class="container mt-4">
-        <h2>Produtos no carrinho</h2>
-        <div class="row" id="lista-produtos">
+        <h2 class="mb-4">Seus Produtos</h2>
+        <div id="lista-produtos">
+            <!-- Produtos serão exibidos aqui -->
         </div>
-        <div class="text-end">
-            <h4 id="preco-total">Total: R$ 0.00</h4>
+        <div class="total-section">
+            Total: <span id="preco-total">R$ 0.00</span>
         </div>
     </main>
 
-    <footer class="text-center py-4">
-        <p>&copy; 2024 Mercado Livre - Todos os direitos reservados</p>
+    <footer>
+        <p>&copy; 2024 Seu e-Commerce. Todos os direitos reservados.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -55,34 +152,36 @@
             carrinho.forEach((produto, index) => {
                 total += produto.price;
 
-                const cardProdutoHtml = `
-                    <div class="col-md-4">
-                        <div class="card product-card">
-                            <img src="${produto.image}" class="card-img-top">
-                            <div class="card-body">
-                                <h5 class="card-title">${produto.title}</h5>
-                                <p class="card-text">${produto.description}</p>
-                                <span class="badge bg-success">
-                                    R$ ${produto.price.toFixed(2)}
-                                </span>
-                                <button class="btn btn-danger m-2" onclick="removerCarrinho(${index})">
-                                    Remover do carrinho
-                                </button>
-                            </div>
+                const produtoHtml = `
+                    <div class="product-row">
+                        <img src="${produto.image}" alt="${produto.title}" class="product-image">
+                        <div class="product-details">
+                            <h5>${produto.title}</h5>
+                            <p>${produto.description}</p>
+                            <span class="price">R$ ${produto.price.toFixed(2)}</span>
                         </div>
+                        <button class="remove-button" onclick="removerCarrinho(${index})">Remover</button>
+                        <button class="checkout-button" onclick="finalizarCompra()">Finalizar Compra</button>
                     </div>
                 `;
 
-                listaProdutosHTML.innerHTML += cardProdutoHtml;
+                listaProdutosHTML.innerHTML += produtoHtml;
             });
 
-            document.getElementById('preco-total').innerText = `Total: R$ ${total.toFixed(2)}`;
+            document.getElementById('preco-total').innerText = `R$ ${total.toFixed(2)}`;
         }
 
         function removerCarrinho(index) {
-            carrinho.splice(index, 1); 
-            localStorage.setItem(chaveLS, JSON.stringify(carrinho)); 
-            mostrarProdutos(); 
+            carrinho.splice(index, 1);
+            localStorage.setItem(chaveLS, JSON.stringify(carrinho));
+            mostrarProdutos();
+        }
+
+        function finalizarCompra() {
+            // Salvar os dados do carrinho no localStorage
+            localStorage.setItem('checkout', JSON.stringify(carrinho));
+            // Redirecionar para a página de checkout
+            window.location.href = 'checkout.html';
         }
 
         window.onload = mostrarProdutos;
