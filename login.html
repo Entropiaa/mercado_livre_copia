@@ -9,28 +9,26 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #0000ff; /* Azul */
+            background-color: #0000ff; 
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            font-family: jetbrains mono;
         }
 
         .container-login {
-            background-color: #a9a9a9; /* Cinza */
+            background-color: #d5d5d5; 
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 300px;
-            text-align: center;
         }
 
         h2 {
-            font-family: 'Arial', sans-serif;
             color: black;
             margin-bottom: 20px;
             font-weight: bold;
-            text-decoration: underline;
         }
 
         .grupo-campo {
@@ -48,7 +46,7 @@
         .btn-login {
             width: 100%;
             padding: 10px;
-            background-color: #28a745; /* Verde */
+            background-color: #28a745; 
             border: none;
             border-radius: 5px;
             color: white;
@@ -60,12 +58,15 @@
         .btn-login:hover {
             background-color: #218838; 
         }
+        .ol{
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="container-login">
-        <h2>Bem vindo ao Tudo Aqui!</h2>
+        <h2 class="ol">Bem vindo ao Tudo Aqui!</h2>
         <form id="form-login" onsubmit="fazerLogin(event)">
             <div class="grupo-campo">
                 <label for="email">Email:</label>
